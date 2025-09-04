@@ -1,0 +1,94 @@
+{
+  "scenarios": [
+    {
+      "type": "functional",
+      "title": "ServerSocket Initialization",
+      "description": "Verify that the server initializes ServerSocket on the configured port.",
+      "testId": "TC-001",
+      "testDescription": "The server should successfully set up and start listening on the configured port using ServerSocket.",
+      "prerequisites": "Port number must be provided in the server's configuration.",
+      "stepsToPerform": "1. Start the server with a valid port number (e.g., 8080).\n2. Check if a 'ServerSocket' is successfully initialized.\n3. Validate that the server starts listening on the specified port.",
+      "expectedResult": "The server initializes the ServerSocket, binds to the specified port, and starts listening without errors."
+    },
+    {
+      "type": "functional",
+      "title": "Handle Multiple Client Connections",
+      "description": "Verify that the server can accept and handle multiple client connections simultaneously.",
+      "testId": "TC-002",
+      "testDescription": "The server should support multiple clients connecting concurrently, maintaining independent communication channels for each.",
+      "prerequisites": "The server must be running and listening on a configured port.",
+      "stepsToPerform": "1. Start the server on port 8080.\n2. Start multiple client instances (e.g., 5) connecting to the server.\n3. Ensure all clients are connected successfully.\n4. Validate that each client can send and receive messages independently without conflicts.",
+      "expectedResult": "All client connections are handled without issues, and each client can interact with the server independently."
+    },
+    {
+      "type": "functional",
+      "title": "Broadcast Messages to All Clients",
+      "description": "Verify that messages sent by one client are broadcast to all connected clients, including the sender.",
+      "testId": "TC-003",
+      "testDescription": "The server should forward every message it receives from one client to all connected clients.",
+      "prerequisites": "The server must be running with at least 3 connected clients.",
+      "stepsToPerform": "1. Start the server.\n2. Start 3 client instances and connect them to the server.\n3. Send a message from Client A (e.g., 'Hello from A').\n4. Check that the message is received by Client B and Client C (and optionally echoed back to Client A).",
+      "expectedResult": "Messages sent from one client are received by all other clients and echoed to the sender."
+    },
+    {
+      "type": "functional",
+      "title": "Independent Client Communication",
+      "description": "Verify that a client can independently send and receive messages even during high server load.",
+      "testId": "TC-004",
+      "testDescription": "Each client should function independently without being affected by the activity of other clients.",
+      "prerequisites": "The server must be running with at least 5 connected clients.",
+      "stepsToPerform": "1. Start the server.\n2. Start 5 clients and connect them to the server.\n3. Have Client A send a message to the server while another client (Client B) sends a different message.\n4. Validate that both messages are received without delay or conflict by the intended recipients.",
+      "expectedResult": "Messages from each client are independently sent and received without interference."
+    },
+    {
+      "type": "functional",
+      "title": "Handle Client Disconnection",
+      "description": "Verify that the server handles client disconnections gracefully.",
+      "testId": "TC-005",
+      "testDescription": "The server should properly clean up resources when a client disconnects and not affect other connected clients.",
+      "prerequisites": "The server must be running with at least 2 connected clients.",
+      "stepsToPerform": "1. Start the server.\n2. Start 2 clients and connect them to the server.\n3. Disconnect one client from the server.\n4. Validate that the server cleans up the resources (e.g., sockets, streams) for the disconnected client.\n5. Ensure the remaining client(s) continue to function normally.",
+      "expectedResult": "The server handles the disconnection gracefully, and other clients are unaffected."
+    },
+    {
+      "type": "functional",
+      "title": "Client Connection Timeout Handling",
+      "description": "Verify that the server handles client connection timeouts correctly.",
+      "testId": "TC-006",
+      "testDescription": "The server should not hang or crash if a client does not send data for an extended period.",
+      "prerequisites": "The server must be running with at least 1 connected client.",
+      "stepsToPerform": "1. Start the server.\n2. Connect a client to the server.\n3. Simulate client inactive state (e.g., no message sent for 30 seconds).\n4. Validate that the server remains responsive and continues to accept new connections.",
+      "expectedResult": "The server manages client timeouts without crashing or hanging, and it continues to accept new connections."
+    },
+    {
+      "type": "non-functional",
+      "title": "Performance Under Load",
+      "description": "Measure the server's performance under high connection loads.",
+      "testId": "TC-007",
+      "testDescription": "The server should handle a large number of concurrent client connections without significant performance degradation.",
+      "prerequisites": "The server should be deployed in a suitable test environment.",
+      "stepsToPerform": "1. Start the server.\n2. Simulate 100+ clients connecting to the server simultaneously.\n3. Measure server response time and resource usage (CPU, memory, etc.).",
+      "expectedResult": "The server maintains acceptable response times and resource usage under heavy load."
+    },
+    {
+      "type": "non-functional",
+      "title": "Resource Cleanup",
+      "description": "Verify proper exception handling and resource management during connection failures.",
+      "testId": "TC-008",
+      "testDescription": "The server must ensure proper cleanup of sockets and streams when a client connection fails or raises an exception.",
+      "prerequisites": "The server must be operational and accepting connections.",
+      "stepsToPerform": "1. Start the server.\n2. Simulate a client abruptly disconnecting (e.g., via network failure).\n3. Validate server logs to ensure the socket and streams for the failed client are closed.\n4. Ensure the server remains responsive for other clients.",
+      "expectedResult": "The server handles the failure gracefully and cleans up resources without impacting other clients."
+    },
+    {
+      "type": "non-functional",
+      "title": "Scalability Test",
+      "description": "Evaluate how the server scales as the number of clients increases.",
+      "testId": "TC-009",
+      "testDescription": "The server should maintain stable performance and reliability as the number of clients increases incrementally.",
+      "prerequisites": "Set up a scalable test environment. Define thresholds for acceptable performance metrics.",
+      "stepsToPerform": "1. Start the server.\n2. Incrementally add clients (e.g., 10, 50, 100, 200 clients) while monitoring server performance metrics.\n3. Observe server behavior as it reaches maximum client capacity.",
+      "expectedResult": "The server scales efficiently, maintaining reliability and stability until it reaches its defined capacity."
+    }
+  ]
+}
