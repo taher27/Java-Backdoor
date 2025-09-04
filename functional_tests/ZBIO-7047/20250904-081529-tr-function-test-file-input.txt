@@ -1,0 +1,84 @@
+{
+  "scenarios": [
+    {
+      "type": "functional",
+      "title": "AI Failure Retry Mechanism on Login",
+      "description": "Verify that the retry mechanism is triggered when the initial login attempt fails due to an AI-related issue.",
+      "testId": "TC-001",
+      "testDescription": "Ensure that when a login attempt fails because of an AI-caused error (e.g., random actions or misbehavior), the system retries up to 2 additional login attempts automatically, as per the requirements.",
+      "prerequisites": "The login system must be set up to distinguish between AI-related and credential-related errors, and AI-related failures must be deterministically simulated for testing purposes.",
+      "stepsToPerform": "1. Simulate an AI-related failure on the first login attempt.\n2. Ensure the retry mechanism is triggered.\n3. Simulate another AI-related failure on the second attempt.\n4. Verify that a third login attempt is triggered.\n5. Ensure the final attempt succeeds, resulting in a successful login.",
+      "expectedResult": "The system retries login up to 2 additional times for AI-related failures and successfully logs the user in on the third attempt."
+    },
+    {
+      "type": "functional",
+      "title": "No Retry on Invalid Credentials",
+      "description": "Validate that the retry mechanism is not triggered when login fails due to invalid credentials.",
+      "testId": "TC-002",
+      "testDescription": "If the user enters invalid credentials, the system must not retry and should directly return an invalid credentials error without attempting additional retries.",
+      "prerequisites": "The login system must be able to differentiate between AI-related and invalid credentials failures.",
+      "stepsToPerform": "1. Simulate a login attempt with incorrect username or password.\n2. Ensure that the system identifies the failure as due to invalid credentials.\n3. Verify that no retry mechanism is triggered.\n4. Check that an appropriate error message is displayed.",
+      "expectedResult": "The system returns an error message for invalid credentials without retrying."
+    },
+    {
+      "type": "non-functional",
+      "title": "AI Error Detection Performance",
+      "description": "Measure the system's response time in detecting AI-related failures during login.",
+      "testId": "TC-003",
+      "testDescription": "Evaluate how quickly the login system can identify and classify failures as AI-related to avoid significant delays in the retry process.",
+      "prerequisites": "AI-related failure simulation must be functional, and the login system must include a mechanism for failure classification.",
+      "stepsToPerform": "1. Trigger an AI-related failure on the first login attempt.\n2. Measure the time it takes for the system to classify and identify the failure condition.\n3. Verify that the time falls within defined performance benchmarks.",
+      "expectedResult": "AI-related failures are detected and classified in less than 1 second."
+    },
+    {
+      "type": "non-functional",
+      "title": "Login Retry Stress Test",
+      "description": "Test the system's behavior under high load with multiple clients simultaneously triggering login retries due to AI-related failures.",
+      "testId": "TC-004",
+      "testDescription": "Evaluate the reliability and performance of the retry mechanism when handling a high number of concurrent client login requests.",
+      "prerequisites": "A performance testing environment must be set up, and the system must allow the simulation of AI-related failures for multiple clients.",
+      "stepsToPerform": "1. Simulate 100 concurrent clients attempting to log in.\n2. Trigger AI-related failures for the first login attempt for all clients.\n3. Allow the retry mechanism to execute for each client.\n4. Monitor system performance, including CPU, memory usage, and retry success rate.",
+      "expectedResult": "All clients successfully log in after retries, and system resource usage remains within acceptable thresholds."
+    },
+    {
+      "type": "functional",
+      "title": "Distinct Error Messages for AI Failures and Credentials Failures",
+      "description": "Validate that the system displays distinct and clear error messages for AI-related failures and credential-related failures.",
+      "testId": "TC-005",
+      "testDescription": "Ensure that users receive clear feedback about the reason for login failure—either AI-related (with retries triggered) or credential-related (with no retries).",
+      "prerequisites": "The system must have error message templates for both failure types.",
+      "stepsToPerform": "1. Simulate a login failure caused by an AI-related issue.\n2. Observe the displayed error message.\n3. Simulate a login failure caused by invalid credentials.\n4. Observe the displayed error message.",
+      "expectedResult": "Distinct error messages are displayed for AI-related failures (e.g., 'Login failed due to technical issues. Retrying...') and credential-related failures (e.g., 'Invalid username or password. Please try again.')."
+    },
+    {
+      "type": "non-functional",
+      "title": "System Resilience During Login Retries",
+      "description": "Verify that the system remains stable and responsive during the retry process.",
+      "testId": "TC-006",
+      "testDescription": "Validate that the system does not crash, hang, or slow down significantly while processing login retries caused by AI-related failures.",
+      "prerequisites": "Set up a monitoring tool to measure system stability and resource usage.",
+      "stepsToPerform": "1. Simulate an AI-related failure on three consecutive login attempts for multiple users.\n2. Monitor for signs of instability, such as high CPU usage, memory leaks, or application crashes.\n3. Ensure the system successfully completes all retry attempts.",
+      "expectedResult": "The system remains stable and responsive throughout the retry process, with no crashes or unresponsive behavior."
+    },
+    {
+      "type": "functional",
+      "title": "Retry Limit Enforcement",
+      "description": "Verify that the system enforces the retry limit of 2 additional attempts for AI-related failures.",
+      "testId": "TC-007",
+      "testDescription": "Ensure the system stops retrying after the maximum retry limit (two additional attempts) is reached and logs the appropriate error.",
+      "prerequisites": "The retry limit must be set to 2 additional attempts in the system settings.",
+      "stepsToPerform": "1. Simulate three consecutive AI-related failures during login.\n2. Observe system behavior after the third failure.\n3. Check the logs or feedback provided to the user.",
+      "expectedResult": "The system does not initiate any further retries and displays/logs an appropriate message after the third failure."
+    },
+    {
+      "type": "non-functional",
+      "title": "Proper Log Handling and Masking of Credentials",
+      "description": "Ensure sensitive user information, such as credentials, is masked in all logs during login and retry attempts.",
+      "testId": "TC-008",
+      "testDescription": "Validate that sensitive data like usernames and passwords are not exposed in the logs, even during retries.",
+      "prerequisites": "Logging must be configured with masking enabled for sensitive data.",
+      "stepsToPerform": "1. Attempt a login with valid credentials.\n2. Check the logs generated during login.\n3. Trigger AI-related failures and retries.\n4. Verify logs for retries.",
+      "expectedResult": "All sensitive data in the logs, such as usernames and passwords, are masked (e.g., replaced with '******')."
+    }
+  ]
+}
